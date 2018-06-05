@@ -38,6 +38,7 @@ router.post('/', function (req, res) {
         var newUser = new User({
             username: req.body.username,
             password: req.body.password,
+            user_type: "emp" //emp dpt adm aca      need to get this dynamic from client
         });
 
         User.createUser(newUser, function (err, user) {

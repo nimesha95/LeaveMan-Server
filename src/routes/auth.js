@@ -42,7 +42,7 @@ router.post('/', function (req, res) {
 			User.comparePassword(password, user.password, function (err, isMatch) {
 				if (err) throw err;
 				if (isMatch) {
-                    const token = jwt.sign({id:user._id , username:user.username},config.jwtSecret);
+                    const token = jwt.sign({id:user._id , username:user.username , user_type:user.user_type},config.jwtSecret);
                     res.json({token});
 				} else {
                     errors.err_msg = "Invalid Credentials"
