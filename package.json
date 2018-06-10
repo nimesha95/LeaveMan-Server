@@ -26,5 +26,6 @@
     "prop-types": "^15.6.1",
     "shortid": "^2.2.8",
     "validator": "^10.2.0"
-  }
+  },
+  "proxy": "http://localhost:3003"
 }
