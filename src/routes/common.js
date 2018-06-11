@@ -23,6 +23,7 @@ router.get('/leave_info_summary', function (req, res) {
     else if(req.query.type == "half"){
         res.json({data: [["Effort", "Amount given"], ["half", 20],["My all2", 20]]});
     }
+    //something here
 });
 
 router.post('/edit_leave', authenticate, function (req, res) {
