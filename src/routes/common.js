@@ -11,9 +11,18 @@ router.post('/make_leave', authenticate, function (req, res) {
     res.json({user_info: "It works"});
 });
 
-//look tihsi sfasa 
+
 router.get('/leave_info_summary', function (req, res) {
-    res.json({data: [["Effort", "Amount given"], ["My all", 50],["My all2", 20]]});
+    console.log(req.query);
+    if(req.query.type == "paid"){
+        res.json({data: [["Effort", "Amount given"], ["paid", 70],["My all2", 20]]});
+    }
+    else if(req.query.type == "sick"){
+        res.json({data: [["Effort", "Amount given"], ["sick", 50],["My all2", 20]]});
+    }
+    else if(req.query.type == "half"){
+        res.json({data: [["Effort", "Amount given"], ["half", 20],["My all2", 20]]});
+    }
 });
 
 router.post('/edit_leave', authenticate, function (req, res) {
