@@ -3,6 +3,10 @@ import authenticate from "../middlewares/authenticate";
 
 var router = express.Router();
 
+/*
+This is the common routing used for users
+*/ 
+
 router.post('/', authenticate, function (req, res) {
     res.json({user_info: "It works"});
 });
