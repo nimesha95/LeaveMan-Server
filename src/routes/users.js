@@ -3,6 +3,7 @@ import validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 
 var User = require('../models/user');
+var LeaveStat = require('../models/leave_stats');
 
 var router = express.Router();
 
@@ -41,13 +42,25 @@ router.post('/', function (req, res) {
             user_type: "emp" //emp dpt adm aca      need to get this dynamic from client
         });
 
+        var newStat = new LeaveStat({
+            username: req.body.username
+        })
+
         User.createUser(newUser, function (err, user) {
             if (err) {
                 res.status(400).json(err);
             } else {
-                res.json({
-                    sucess: true
-                });
+                //handle stuff about admin user having a leave stat
+                LeaveStat.createLeaveStat(newStat,function(err, user){
+                    if(err) {
+                        res.status(400),json(err);
+                    }
+                    else{
+                        res.json({
+                            sucess: true
+                        });
+                    }
+                })
             }
         });
     } else {
