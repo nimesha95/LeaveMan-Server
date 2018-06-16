@@ -37,7 +37,17 @@ module.exports.createLeave = function (newLeave, callback) {
     newLeave.save(callback);
 }
 
-module.exports.getLeaveByUsername = function(username, callback){
+module.exports.getLeaveByUsername = function(username ,callback){
 	var query = {username: username};
 	Leave.find(query, callback).sort({_id: -1}).limit(20);
+}
+
+module.exports.getLeaveByID = function(id ,callback){
+	var query = {_id: id};
+	Leave.findOne(query, callback);
+}
+
+module.exports.getToApprovedLeaves = function(callback){
+	var query = {approved: 0 , confirmed: 0};
+	Leave.find(query, callback);
 }
