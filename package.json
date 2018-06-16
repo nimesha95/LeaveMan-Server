@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.2.1",
     "moment": "^2.22.2",
     "prop-types": "^15.6.1",
+    "react-table": "^6.8.6",
     "shortid": "^2.2.8",
     "validator": "^10.2.0"
   },

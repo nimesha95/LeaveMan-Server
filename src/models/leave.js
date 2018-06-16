@@ -36,3 +36,8 @@ var Leave = module.exports = mongoose.model('Leave', LeaveSchema);
 module.exports.createLeave = function (newLeave, callback) {
     newLeave.save(callback);
 }
+
+module.exports.getLeaveByUsername = function(username, callback){
+	var query = {username: username};
+	Leave.find(query, callback).sort({_id: -1}).limit(20);
+}

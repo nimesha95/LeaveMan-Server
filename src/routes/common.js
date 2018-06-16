@@ -2,6 +2,7 @@ var express = require('express');
 import authenticate from "../middlewares/authenticate";
 import moment from 'moment';
 
+import {SICK_LEAVE_COUNT , PAID_LEAVE_COUNT, HALF_DAY_COUNT} from '../const';
 var Leave = require('../models/leave');
 var LeaveStat = require('../models/leave_stats');
 
@@ -19,8 +20,11 @@ router.post('/make_leave', authenticate, function (req, res) {
     if(given_date.isBefore(cur_date)){
         errors.err_msg = "You've selected an invalid date"
         res.status(400).json(errors);
-        //need to think abouth how to make leaves same day *********
-    } 
+    }
+    else if(moment(given_date).format('dddd') == "Sunday"){
+        errors.err_msg = "You've selected a Sunday"
+        res.status(400).json(errors);
+    }
     else{
         var newLeave = new Leave({
             username: req.currentUser.username,
@@ -64,17 +68,28 @@ router.post('/make_leave', authenticate, function (req, res) {
     }
 });
 
+router.post('/leave_info_summary', authenticate, function (req, res) {
+    var type = req.body.type;
+    var username = req.currentUser.username;
 
-router.get('/leave_info_summary', function (req, res) {
-    if(req.query.type == "paid"){
-        res.json({data: [["Effort", "Amount given"], ["paid", 70],["My all2", 20]]});
-    }
-    else if(req.query.type == "sick"){
-        res.json({data: [["Effort", "Amount given"], ["sick", 50],["My all2", 20]]});
-    }
-    else if(req.query.type == "half"){
-        res.json({data: [["Effort", "Amount given"], ["half", 20],["My all2", 20]]});
-    }
+    LeaveStat.getLeaveByUsername(username,function(err, leave_stat){
+        if(err) {
+            res.status(400);
+        }
+        else{
+            leave_stat = leave_stat.remaining_leave;
+
+            if(type == "paid"){
+                res.json({data: [["remaining", "used"], ["Leaves left", leave_stat.paid],["Used", PAID_LEAVE_COUNT - leave_stat.paid]]});
+            }
+            else if(type == "sick"){
+                res.json({data: [["remaining", "used"], ["Leaves left", leave_stat.sick],["Used", SICK_LEAVE_COUNT - leave_stat.sick]]});
+            }
+            else if(type == "half"){
+                res.json({data: [["remaining", "used"], ["Leaves left", leave_stat.half],["Used", HALF_DAY_COUNT - leave_stat.half]]});
+            }
+        }
+    })    
 });
 
 router.post('/edit_leave', authenticate, function (req, res) {
@@ -87,6 +102,19 @@ router.post('/cancel_leave', authenticate, function (req, res) {
 
 router.post('/approve_leave', authenticate, function (req, res) {
     res.json({user_info: "It works"});
+});
+
+router.post('/leave_history', authenticate , function (req, res) {
+    //this returns latest 20 items from the history
+    Leave.getLeaveByUsername(req.currentUser.username, function (err, leaves) {
+        if(err){
+            res.status(400).json(err);
+        }
+        else{
+            res.json({leave_history: leaves});
+        }
+    });
+    
 });
 
 module.exports = router;
