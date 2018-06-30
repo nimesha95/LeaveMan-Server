@@ -51,3 +51,15 @@ module.exports.getToApprovedLeaves = function(callback){
 	var query = {approved: 0 , confirmed: 0};
 	Leave.find(query, callback);
 }
+
+module.exports.ApproveLeave = function(id ,callback){
+    var constraint = { _id: id};
+    var query = { $set: { approved: 1 } };
+    Leave.update(constraint , query,callback);
+}
+
+module.exports.DeclineLeave = function(id ,callback){
+    var constraint = { _id: id};
+    var query = { $set: { approved: -1 } };
+    Leave.update(constraint , query,callback);
+}

@@ -1,6 +1,7 @@
 var express = require('express');
 import authenticate from "../middlewares/authenticate";
 var Leave = require('../models/leave');
+var User = require('../models/user');
 
 var router = express.Router();
 
@@ -12,12 +13,20 @@ router.post('/toApprove', authenticate, function (req, res) {
                 res.status(400);
             }
             else{
-                Leave.getLeaveByUsername(LeaveInfo.username, function (err, leaves) {
+                User.getUserByUsername(LeaveInfo.username, function (err, user_info) {
                     if(err){
                         res.status(400).json(err);
                     }
                     else{
-                        res.json({LeaveInfo : LeaveInfo, LeaveHistory: leaves});
+                        Leave.getLeaveByUsername(LeaveInfo.username, function (err, leaves) {
+                            if(err){
+                                res.status(400).json(err);
+                            }
+                            else{
+                                //console.log(user_info);
+                                res.json({LeaveInfo : LeaveInfo, LeaveHistory: leaves, UserInfo:user_info});
+                            }
+                        });
                     }
                 });
             }
@@ -29,10 +38,35 @@ router.post('/toApprove', authenticate, function (req, res) {
                 res.status(400);
             }
             else{
+                //console.log(toApproveLeaves);
                 res.json(toApproveLeaves);
             }
         })   
     } 
+});
+
+router.post('/Approve',authenticate,function(req,res){
+    Leave.ApproveLeave(req.body.data,function(err, Info){
+        if(err) {
+            console.log(err);
+            res.status(400);
+        }
+        else{
+            res.json({status: "updated successfully"})
+        }
+    });
+});
+
+router.post('/Decline',authenticate,function(req,res){
+    Leave.DeclineLeave(req.body.data,function(err, Info){
+        if(err) {
+            console.log(err);
+            res.status(400);
+        }
+        else{
+            res.json({status: "Declined successfully"})
+        }
+    });
 });
 
 

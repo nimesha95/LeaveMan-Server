@@ -12,6 +12,9 @@ var UserSchema = mongoose.Schema({
 	},
 	user_type: {
 		type: String
+	},
+	dept: {
+		type: Number
 	}
 });
 
