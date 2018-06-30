@@ -69,5 +69,25 @@ router.post('/Decline',authenticate,function(req,res){
     });
 });
 
+router.post('/Callender',authenticate,function(req,res){
+    Leave.getConfirmedLeaves(function(err, Info){
+        if(err) {
+            console.log(err);
+            res.status(400);
+        }
+        else{
+            var schedule = [];
+
+            Info.forEach(element => {
+                var temp = {title: element.username , start: element.date_moment , end: element.date_moment}
+                schedule.push(temp);
+                //console.log(schedule);
+            });
+
+            res.json({schedule: schedule})
+        }
+    });
+});
+
 
 module.exports = router;

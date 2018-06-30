@@ -63,3 +63,8 @@ module.exports.DeclineLeave = function(id ,callback){
     var query = { $set: { approved: -1 } };
     Leave.update(constraint , query,callback);
 }
+
+module.exports.getConfirmedLeaves = function(callback){
+	var query = {approved: 1 , confirmed: 1};
+	Leave.find(query, callback);
+}
