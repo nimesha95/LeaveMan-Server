@@ -1,3 +1,4 @@
+var moment = require("moment");
 var mongoose = require('mongoose');
 
 //vehicle schema
@@ -9,7 +10,13 @@ var LeaveSchema = mongoose.Schema({
     date: {
         type: String
     },
+    date_end: {
+        type: String
+    },
     date_moment: {
+        type: String
+    },
+    date_moment_end: {
         type: String
     },
     type:{
@@ -22,9 +29,21 @@ var LeaveSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    approvedBy:{
+        type: String,
+        default: ""
+    },
+    approvedTimestamp:{
+        type: String,
+        default: ""
+    },
     confirmed:{
         type: Number,
         default: 0
+    },
+    confirmedTimestamp:{
+        type: String,
+        default: ""
     },
     timestamp:{
         type: String
@@ -52,9 +71,9 @@ module.exports.getToApprovedLeaves = function(callback){
 	Leave.find(query, callback);
 }
 
-module.exports.ApproveLeave = function(id ,callback){
+module.exports.ApproveLeave = function(id , approvedBy,callback){
     var constraint = { _id: id};
-    var query = { $set: { approved: 1 } };
+    var query = { $set: { approved: 1 , approvedBy: approvedBy , approvedTimestamp: moment() } };
     Leave.update(constraint , query,callback);
 }
 
@@ -67,4 +86,15 @@ module.exports.DeclineLeave = function(id ,callback){
 module.exports.getConfirmedLeaves = function(callback){
 	var query = {approved: 1 , confirmed: 1};
 	Leave.find(query, callback);
+}
+
+module.exports.getToConfirmedLeaves = function(callback){
+	var query = {approved: 1 , confirmed: 0};
+	Leave.find(query, callback);
+}
+
+module.exports.ConfirmLeave = function(id ,callback){
+    var constraint = { _id: id};
+    var query = { $set: { confirmed: 1 , confirmedTimestamp: moment() } };
+    Leave.update(constraint , query,callback);
 }

@@ -29,7 +29,9 @@ router.post('/make_leave', authenticate, function (req, res) {
         var newLeave = new Leave({
             username: req.currentUser.username,
             date_moment: req.body.startDate,
+            date_moment_end: req.body.endDate,
             date: moment(req.body.startDate).format('YYYY-MM-DD'),
+            date_end: moment(req.body.endDate).format('YYYY-MM-DD'),
             type: req.body.leave_type,
             reason: req.body.reason ,
             timestamp: Date.now()

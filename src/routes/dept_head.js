@@ -46,7 +46,7 @@ router.post('/toApprove', authenticate, function (req, res) {
 });
 
 router.post('/Approve',authenticate,function(req,res){
-    Leave.ApproveLeave(req.body.data,function(err, Info){
+    Leave.ApproveLeave(req.body.data, req.currentUser.username ,function(err, Info){
         if(err) {
             console.log(err);
             res.status(400);
@@ -79,7 +79,7 @@ router.post('/Callender',authenticate,function(req,res){
             var schedule = [];
 
             Info.forEach(element => {
-                var temp = {title: element.username , start: element.date_moment , end: element.date_moment}
+                var temp = {title: element.username , start: element.date_moment , end: element.date_moment_end}
                 schedule.push(temp);
                 //console.log(schedule);
             });
