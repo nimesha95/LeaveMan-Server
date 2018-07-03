@@ -2,24 +2,11 @@ var express = require('express');
 import authenticate from "../middlewares/authenticate";
 var Leave = require('../models/leave');
 var User = require('../models/user');
+var Notification = require('../models/notification');
 
 var router = express.Router();
 
 router.post('/toConfirm', authenticate, function (req, res) {
-    /*
-    if (req.body._id) {
-        Leave.getToConfirmedLeaves(function (err, Info) {
-            if (err) {
-                console.log(err);
-                res.status(400);
-            } else {
-                res.json({
-                    pending_leaves: Info.length
-                })
-            }
-        });
-    }
-    */
     if (req.body._id) {
         console.log(req.body._id)
         Leave.getLeaveByID(req.body._id, function (err, LeaveInfo) {
@@ -72,6 +59,20 @@ router.post('/confirm_leave', authenticate, function (req, res) {
             })
         }
     });
+    
+    var newNotification = new Notification({
+        username: req.body.uname,
+        message:  "Leave for "+req.body.leave_date+" confirmed successfully",
+        timestamp: Date.now(),
+    });
+    Notification.createNotification(newNotification, function (err, user) {
+        if (err) {
+            res.status(400).json(err);
+        } else {
+            console.log("Notification posted successfully")
+        }
+    });
+    
 })
 
 
