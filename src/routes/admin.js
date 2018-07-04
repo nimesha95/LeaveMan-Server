@@ -5,8 +5,21 @@ var Leave = require('../models/leave');
 var Leave = require('../models/leave');
 var router = express.Router();
 
-router.post('/', authenticate, function (req, res) {
-    res.json(req.headers['authorization']);
+router.post('/chart_stat', authenticate, function (req, res) {
+    Leave.getAllLeaves(function(err , things){
+        if(err) throw err;
+        var arr = [];
+        things.forEach(element => {
+            arr.push(element.date);
+        });
+        var counts = {};
+        for (var i = 0; i < arr.length; i++) {
+            counts[arr[i]] = 1 + (counts[arr[i]] || 0);
+        }
+        res.json({counts: counts});
+    })
+
+    //res.json(req.headers['authorization']);
 });
 
 router.post('/getEmpStat', authenticate, function (req, res) {
